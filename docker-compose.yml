@@ -1,0 +1,78 @@
+version: "2"
+
+services:
+
+  consul:
+    image:  gliderlabs/consul-server:latest
+    command: "-advertise=10.38.113.131 -server -bootstrap"
+    container_name: consul
+    hostname: dockermachine
+    ports:
+    - 8500:8500
+
+  registrator:
+    image: gliderlabs/registrator:latest
+    command: "-ip 10.38.113.131 consul://10.38.113.131:8500"
+    container_name: registrator
+    hostname: dockermachine
+    depends_on:
+     - consul
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+
+#  redis:
+#    image: redis:alpine
+#    container_name: redis
+#    hostname: dockermachine
+#    ports:
+#      - 6379:6379
+
+#  etcd:
+#    image: quay.io/coreos/etcd
+#    container_name: etcd
+#    hostname: dockermachine
+#    ports:
+#      - 2379:2379
+#      - 2380:2380
+
+#Grafana
+
+#  grafana:
+#    image: grafana/grafana:latest
+#    container_name: grafana
+#    hostname: dockermachine
+#    ports:
+#      - 3000:3000
+#    links:
+#      - influxdb
+#  
+#  influxdb:
+#    image: influxdb:latest
+#    container_name: influxdb
+#    hostname: dockermachine
+#    ports:
+#      - 8083:8083
+#      - 8086:8086
+#      - 8090:8090
+
+#  zookeeper:
+#    image: wurstmeister/zookeeper
+#    ports:
+#      - "2181:2181"
+#  kafka:
+#    build: .
+#    ports:
+#      - "9092"
+#    environment:
+#      KAFKA_ADVERTISED_HOST_NAME: 10.38.113.126
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+#  test-ms:
+#    image: test-ms
+#    container_name: test-ms
+#    volumes:
+#     - /var/log/test:/var/log/test
+#    ports:
+#     - 10100:8080
+
